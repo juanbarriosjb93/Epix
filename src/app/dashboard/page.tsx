@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { API_URL } from "@/lib/api";
 import { Play, Menu, X, Plus, Image as ImageIcon, Video, Sparkles, LogOut, User, Loader2 } from "lucide-react";
 
 type Generation = {
@@ -32,7 +33,7 @@ export default function DashboardPage() {
     }
     const fetchUser = async () => {
       try {
-        const res = await fetch("http://localhost:8000/auth/me", {
+        const res = await fetch(`${API_URL}/auth/me`, {
           headers: { "auth-header": `Bearer ${token}` },
         });
         if (res.ok) {
@@ -58,7 +59,7 @@ export default function DashboardPage() {
         body.image_urls = uploadedImages;
         body.strength = 0.6;
       }
-      const res = await fetch(`http://localhost:8000${endpoint}`, {
+      const res = await fetch(`${API_URL}${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,7 +86,7 @@ export default function DashboardPage() {
     if (!token) return;
     const interval = setInterval(async () => {
       try {
-        const res = await fetch("http://localhost:8000/generate/generations", {
+        const res = await fetch(`${API_URL}/generate/generations`, {
           headers: { "auth-header": `Bearer ${token}` },
         });
         if (res.ok) {
@@ -289,7 +290,7 @@ export default function DashboardPage() {
                   <div key={gen.id} className="glass rounded-xl p-4 flex items-center gap-4">
                     <div className="w-24 h-24 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0">
                       {gen.status === "completed" && gen.outputs && gen.outputs.length > 0 ? (
-                        <img src={gen.outputs[0].startsWith("http") ? gen.outputs[0] : `http://localhost:8000${gen.outputs[0]}`} alt="Generated" className="w-full h-full object-cover rounded-lg" />
+                        <img src={gen.outputs[0].startsWith("http") ? gen.outputs[0] : `${API_URL}${gen.outputs[0]}`} alt="Generated" className="w-full h-full object-cover rounded-lg" />
                       ) : gen.status === "processing" ? (
                         <div className="flex items-center justify-center w-full h-full">
                           <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />

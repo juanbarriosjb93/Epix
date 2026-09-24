@@ -31,3 +31,5 @@ Currently using a placeholder video generator. Replace `app/services/video_gener
 ## DB
 
 SQLite by default. Set `DATABASE_URL` env var to use PostgreSQL.
+
+For the GPU/local generation stack, install equirements-gpu.txt instead. Env vars: DATABASE_URL, SECRET_KEY, CORS_ORIGINS (comma-separated).

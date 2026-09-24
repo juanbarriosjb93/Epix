@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { API_URL } from "@/lib/api";
 import { Play, ImagePlus, X, Loader2, ChevronRight, Video } from "lucide-react";
 
 export default function CreatePage() {
@@ -38,7 +39,7 @@ export default function CreatePage() {
       const token = localStorage.getItem("token") || "";
       const body: any = { prompt };
       if (imageUrl) body.image_url = imageUrl;
-      const res = await fetch("http://localhost:8000/generate/image-to-video", {
+      const res = await fetch(`${API_URL}/generate/image-to-video`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -48,7 +49,7 @@ export default function CreatePage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.detail || "Generation failed");
-      const videoUrl = data.video_url ? `http://localhost:8000${data.video_url}` : null;
+      const videoUrl = data.video_url ? `${API_URL}${data.video_url}` : null;
       setResult(videoUrl);
       setRecent((prev) => [data, ...prev]);
     } catch (err: any) {
@@ -150,7 +151,7 @@ export default function CreatePage() {
                 <div key={gen.id} className="glass rounded-xl p-4 flex items-center gap-4">
                   <div className="w-24 h-24 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0">
                     {gen.video_url ? (
-                      <video src={`http://localhost:8000${gen.video_url}`} className="w-full h-full object-cover rounded-lg" />
+                      <video src={`${API_URL}${gen.video_url}`} className="w-full h-full object-cover rounded-lg" />
                     ) : (
                       <Video className="w-8 h-8 text-zinc-600" />
                     )}

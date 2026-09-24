@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { API_URL } from "@/lib/api";
 import { ImagePlus, X, Loader2, Image as ImageIcon, Video } from "lucide-react";
 
 type Generation = {
@@ -61,7 +62,7 @@ export default function ImageGenPage() {
     try {
       const token = localStorage.getItem("token") || "";
       const base64Images = await Promise.all(files.map(toBase64));
-      const res = await fetch("http://localhost:8000/generate/image-to-image", {
+      const res = await fetch(`${API_URL}/generate/image-to-image`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,7 +79,7 @@ export default function ImageGenPage() {
       const outputs = (data.outputs || []).map((u: string) => {
         if (u.startsWith("http")) return u;
         if (u.startsWith("data:")) return u;
-        const base = `http://localhost:8000${u}`;
+        const base = `${API_URL}${u}`;
         return base.includes("?") ? `${base}&t=${Date.now()}` : `${base}?t=${Date.now()}`;
       });
       setResults(outputs);
@@ -97,7 +98,7 @@ export default function ImageGenPage() {
     if (!token) return;
     const interval = setInterval(async () => {
       try {
-        const res = await fetch("http://localhost:8000/generate/generations", {
+        const res = await fetch(`${API_URL}/generate/generations`, {
           headers: { "auth-header": `Bearer ${token}` },
         });
         if (res.ok) {
@@ -223,7 +224,7 @@ export default function ImageGenPage() {
                 <div key={gen.id} className="glass rounded-xl p-4 flex items-center gap-4">
                   <div className="w-24 h-24 rounded-lg bg-zinc-800 flex items-center justify-center flex-shrink-0">
                     {gen.outputs && gen.outputs.length > 0 ? (
-                      <img src={(gen.outputs && gen.outputs.length > 0 ? (gen.outputs[0].startsWith("http") ? gen.outputs[0] : gen.outputs[0].startsWith("data:") ? gen.outputs[0] : `http://localhost:8000${gen.outputs[0]}`) : "").split("?")[0] + "?t=" + Date.now()} alt="Generated" className="w-full h-full object-cover rounded-lg" />
+                      <img src={(gen.outputs && gen.outputs.length > 0 ? (gen.outputs[0].startsWith("http") ? gen.outputs[0] : gen.outputs[0].startsWith("data:") ? gen.outputs[0] : `${API_URL}${gen.outputs[0]}`) : "").split("?")[0] + "?t=" + Date.now()} alt="Generated" className="w-full h-full object-cover rounded-lg" />
                     ) : gen.status === "processing" ? (
                       <Loader2 className="w-6 h-6 text-violet-400 animate-spin" />
                     ) : gen.status === "pending" ? (
