@@ -7,6 +7,7 @@ from PIL import Image
 from datetime import datetime
 from app.db import SessionLocal
 from app.models.models import Generation
+from app.services.comfy_client import free_models
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +51,6 @@ def _get_pipe():
         _pipe = Flux2Pipeline.from_pretrained(
             model_path,
             torch_dtype=torch_dtype,
-            text_encoder=None,
         )
         _model_type = "flux2"
     else:
@@ -67,6 +67,8 @@ def _get_pipe():
             _pipe.enable_attention_slicing()
         if hasattr(_pipe, "enable_vae_slicing"):
             _pipe.enable_vae_slicing()
+        if hasattr(_pipe, "enable_vae_tiling"):
+            _pipe.enable_vae_tiling()
         torch.cuda.empty_cache()
 
     logger.info(f"Model loaded: {_model_type} on {device}")
@@ -110,7 +112,7 @@ def _run_inference(pipe, prompt: str, img: Image.Image, strength: float):
         return pipe(
             prompt=prompt,
             image=img,
-            num_inference_steps=28,
+            num_inference_steps=20,
             guidance_scale=4.0,
         )
     else:
@@ -136,6 +138,7 @@ def generate_img2img(gen_id: str, prompt: str, image_urls: list[str] | None, str
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
 
+        free_models()
         pipe = _get_pipe()
         images = []
         for idx, url in enumerate(image_urls or []):

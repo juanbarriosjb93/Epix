@@ -36,6 +36,18 @@ def is_available() -> bool:
         return False
 
 
+def free_models() -> None:
+    """Release ComfyUI's cached models so other GPU tenants can run."""
+    try:
+        requests.post(
+            f"{COMFYUI_URL}/free",
+            json={"unload_models": True, "free_memory": True},
+            timeout=30,
+        )
+    except Exception:
+        logger.warning("Failed to free ComfyUI models", exc_info=True)
+
+
 def upload_image(image_bytes: bytes, filename: str) -> str:
     resp = requests.post(
         f"{COMFYUI_URL}/upload/image",
