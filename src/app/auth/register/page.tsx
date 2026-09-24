@@ -24,7 +24,7 @@ export default function RegisterPage() {
       if (!res.ok) throw new Error("Registration failed");
       const data = await res.json();
       localStorage.setItem("token", data.access_token);
-      window.location.href = "/dashboard";
+      window.location.href = "/home";
     } catch (err) {
       alert("Registration failed");
     } finally {

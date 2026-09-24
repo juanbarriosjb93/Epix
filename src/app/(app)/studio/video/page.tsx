@@ -60,8 +60,8 @@ export default function CreatePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050508]">
-      <div className="max-w-5xl mx-auto px-4 py-12">
+    <div>
+      <div className="max-w-3xl">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-fuchsia-600 flex items-center justify-center">
             <Video className="w-5 h-5 text-white" />

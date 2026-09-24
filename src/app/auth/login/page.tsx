@@ -23,7 +23,7 @@ export default function LoginPage() {
       if (!res.ok) throw new Error("Login failed");
       const data = await res.json();
       localStorage.setItem("token", data.access_token);
-      window.location.href = "/dashboard";
+      window.location.href = "/home";
     } catch (err) {
       alert("Invalid credentials");
     } finally {
